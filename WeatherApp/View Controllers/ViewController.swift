@@ -14,21 +14,22 @@ class ViewController: UIViewController {
     @IBOutlet var temperatureLabel: UILabel!
     @IBOutlet var feelsLikeTemperatureLabel: UILabel!
     
-    let networkWeatherManager = NetworkWeatherManager()
+    var networkWeatherManager = NetworkWeatherManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        networkWeatherManager.delegate = self
         networkWeatherManager.fetchCurrentWeather(forCity: "London")
     }
 
     
     @IBAction func searchButtonPressed(_ sender: UIButton) {
         searchAlertController(withTitle: "Enter city name", message: nil, style: .alert)
+        
     }
     
     private func searchAlertController(withTitle title: String, message: String?, style: UIAlertController.Style) {
-        
         let alert = UIAlertController(
             title: title,
             message: message,
@@ -52,3 +53,13 @@ class ViewController: UIViewController {
     }
 }
 
+extension ViewController: NetworkWeatherManagerDelegate {
+    func updateInterface(_: NetworkWeatherManager, with currentWeather: CurrentWeather) {
+        DispatchQueue.main.async {
+            self.cityLabel.text = currentWeather.cityName
+            self.temperatureLabel.text = currentWeather.temperatureString
+            self.feelsLikeTemperatureLabel.text = currentWeather.feelsLikeTemperatureString
+            self.weatherIconImageView.image = UIImage(systemName: currentWeather.systemIconNameString)
+        }
+    }
+}
