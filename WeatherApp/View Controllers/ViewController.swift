@@ -39,7 +39,8 @@ class ViewController: UIViewController {
             let textField = alert.textFields?.first
             guard let cityName = textField?.text else { return }
             if cityName != "" {
-                print("search info for the \(cityName)")
+                let city = cityName.split(separator: " ").joined(separator: "%20")
+                self.networkWeatherManager.fetchCurrentWeather(forCity: city)
             }
         }
         let cancel = UIAlertAction(title: "Cancel", style: .cancel)
